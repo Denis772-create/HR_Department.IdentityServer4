@@ -1,4 +1,3 @@
-using System.Reflection;
 using HR.Department.IdentityServer4.Configuration;
 using HR.Department.IdentityServer4.Data;
 using HR.Department.IdentityServer4.Infrastructure;
@@ -14,19 +13,17 @@ namespace HR.Department.IdentityServer4
 {
     public class Startup
     {
-        private readonly IHostEnvironment _environment;
         private IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration, IHostEnvironment environment)
         {
-            _environment = environment;
             Configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(config =>
-                    config.UseSqlServer(Configuration.GetConnectionString("ApplicationDbContext")))
+                    config.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
                 .AddIdentity<IdentityUser, IdentityRole>(config =>
                 {
                     config.Password.RequireDigit = false;
@@ -39,8 +36,6 @@ namespace HR.Department.IdentityServer4
 
             services.ConfigureApplicationCookie(congig =>
                 congig.Cookie.Name = "IdentityServer.Cookies");
-
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             services.AddIdentityServer()
                 .AddAspNetIdentity<IdentityUser>()
@@ -76,3 +71,4 @@ namespace HR.Department.IdentityServer4
         }
     }
 }
+
