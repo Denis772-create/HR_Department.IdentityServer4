@@ -113,9 +113,8 @@ namespace HR.Department.IdentityServer4.Controllers
             var vm = await BuildLogoutViewModelAsync(logoutId);
 
             if (vm.ShowLogoutPrompt == false)
-            {
                 return await Logout(vm);
-            }
+
             return View(vm);
         }
 
@@ -131,12 +130,6 @@ namespace HR.Department.IdentityServer4.Controllers
                 await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
             }
             return View("LoggedOut", vm);
-        }
-
-        [HttpGet]
-        public IActionResult AccessDenied()
-        {
-            return View();
         }
 
         private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
@@ -163,16 +156,11 @@ namespace HR.Department.IdentityServer4.Controllers
 
         private async Task<LogoutViewModel> BuildLogoutViewModelAsync(string logoutId)
         {
-            var vm = new LogoutViewModel { LogoutId = logoutId, ShowLogoutPrompt = AccountOptions.ShowLogoutPrompt };
+            var vm = new LogoutViewModel { 
+                LogoutId = logoutId,
+                ShowLogoutPrompt = AccountOptions.ShowLogoutPrompt };
 
             if (User?.Identity.IsAuthenticated != true)
-            {
-                vm.ShowLogoutPrompt = false;
-                return vm;
-            }
-
-            var context = await _interaction.GetLogoutContextAsync(logoutId);
-            if (context?.ShowSignoutPrompt == false)
             {
                 vm.ShowLogoutPrompt = false;
                 return vm;
