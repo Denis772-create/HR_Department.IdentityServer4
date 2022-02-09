@@ -17,10 +17,10 @@ namespace HR.Department.IdentityServer4.Data
                 UserName = "User"
             };
 
-            var result = userManager.CreateAsync(user, "123qwe").GetAwaiter().GetResult();
+            var result = userManager.CreateAsync(user, "Password").GetAwaiter().GetResult();
             if (result.Succeeded)
             {
-                userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Administrator")).GetAwaiter().GetResult();
+                userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Admin")).GetAwaiter().GetResult();
                 userManager.AddClaimAsync(user, new Claim(JwtClaimTypes.Scope, "DepartmentAPI")).GetAwaiter().GetResult();
             }
 

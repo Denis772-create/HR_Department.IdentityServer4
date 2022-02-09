@@ -3,9 +3,9 @@ using HR.Department.IdentityServer4.ViewModels;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HR.Department.IdentityServer4
+namespace HR.Department.IdentityServer4.Extensions
 {
-    public static class Extensions
+    public static class AuthExtensions
     {
         public static bool IsNativeClient(this AuthorizationRequest context)
         {

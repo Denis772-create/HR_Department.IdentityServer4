@@ -12,7 +12,7 @@ namespace HR.Department.IdentityServer4.Infrastructure
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.DateOfBirth, "10.03.2000")
+                new Claim(ClaimTypes.Role, "Admin")
             };
 
             context.IssuedClaims.AddRange(claims);

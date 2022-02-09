@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace HR.Department.IdentityServer4.Models
+﻿namespace HR.Department.IdentityServer4.Models
 {
     public class AccountOptions
     {

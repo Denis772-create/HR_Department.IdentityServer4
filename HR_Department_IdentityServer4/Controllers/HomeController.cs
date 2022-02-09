@@ -9,7 +9,6 @@ using Microsoft.Extensions.Hosting;
 namespace HR.Department.IdentityServer4.Controllers
 {
     [AllowAnonymous]
-
     public class HomeController : Controller
     {
         private readonly IIdentityServerInteractionService _interaction;

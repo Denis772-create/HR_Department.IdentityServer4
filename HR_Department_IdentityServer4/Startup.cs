@@ -1,9 +1,7 @@
-using HR.Department.IdentityServer4.Configuration;
 using HR.Department.IdentityServer4.Data;
-using HR.Department.IdentityServer4.Infrastructure;
+using HR.Department.IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,37 +13,19 @@ namespace HR.Department.IdentityServer4
     {
         private IConfiguration Configuration { get; }
 
-        public Startup(IConfiguration configuration, IHostEnvironment environment)
-        {
+        public Startup(IConfiguration configuration, IHostEnvironment environment) =>
             Configuration = configuration;
-        }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(config =>
-                    config.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
-                .AddIdentity<IdentityUser, IdentityRole>(config =>
-                {
-                    config.Password.RequireDigit = false;
-                    config.Password.RequireLowercase = false;
-                    config.Password.RequireNonAlphanumeric = false;
-                    config.Password.RequireUppercase = false;
-                    config.Password.RequiredLength = 6;
-                })
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                    config.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.ConfigureIdentity();
             services.ConfigureApplicationCookie(congig =>
                 congig.Cookie.Name = "IdentityServer.Cookies");
 
-            services.AddIdentityServer()
-                .AddAspNetIdentity<IdentityUser>()
-                .AddInMemoryClients(IdentityServerConfiguration.GetClients())
-                .AddInMemoryApiResources(IdentityServerConfiguration.GetApiResourses())
-                .AddInMemoryIdentityResources(IdentityServerConfiguration.GetIdentityResourses())
-                .AddInMemoryApiScopes(IdentityServerConfiguration.GetApiScopes())
-                .AddProfileService<ProfileService>()
-                .AddDeveloperSigningCredential();
-
+            services.ConfigureIdentityServer();
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
         }

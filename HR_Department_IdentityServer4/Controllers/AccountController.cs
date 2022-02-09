@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using HR.Department.IdentityServer4.Extensions;
 using HR.Department.IdentityServer4.Models;
 using HR.Department.IdentityServer4.ViewModels;
 using IdentityModel;
@@ -8,7 +9,6 @@ using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
-using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -22,7 +22,6 @@ namespace HR.Department.IdentityServer4.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IIdentityServerInteractionService _interaction;
-        private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
 
@@ -30,14 +29,12 @@ namespace HR.Department.IdentityServer4.Controllers
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             IIdentityServerInteractionService interaction,
-            IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _interaction = interaction;
-            _clientStore = clientStore;
             _schemeProvider = schemeProvider;
             _events = events;
         }
@@ -110,7 +107,7 @@ namespace HR.Department.IdentityServer4.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout(string logoutId)
         {
-            var vm = await BuildLogoutViewModelAsync(logoutId);
+            var vm = BuildLogoutViewModel(logoutId);
 
             if (vm.ShowLogoutPrompt == false)
                 return await Logout(vm);
@@ -154,11 +151,13 @@ namespace HR.Department.IdentityServer4.Controllers
             return vm;
         }
 
-        private async Task<LogoutViewModel> BuildLogoutViewModelAsync(string logoutId)
+        private LogoutViewModel BuildLogoutViewModel(string logoutId)
         {
-            var vm = new LogoutViewModel { 
+            var vm = new LogoutViewModel
+            {
                 LogoutId = logoutId,
-                ShowLogoutPrompt = AccountOptions.ShowLogoutPrompt };
+                ShowLogoutPrompt = AccountOptions.ShowLogoutPrompt
+            };
 
             if (User?.Identity.IsAuthenticated != true)
             {
