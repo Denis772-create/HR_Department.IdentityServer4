@@ -27,8 +27,6 @@ namespace HR.Department.IdentityServer4.Configuration
                 RedirectUris = { "https://localhost:5011/signin-oidc" },
                 PostLogoutRedirectUris = { "https://localhost:5011/signout-callback-oidc" },
 
-                RequireConsent = false,
-
                 AccessTokenLifetime = 60,
 
                 AllowOfflineAccess = true
@@ -37,7 +35,6 @@ namespace HR.Department.IdentityServer4.Configuration
             {
                 ClientId = "test_api_swagger",
                 ClientName = "Swagger UI for demo_api",
-                ClientSecrets = { new Secret("test_api_swagger_secret".Sha256()) },
 
                 AllowedGrantTypes = GrantTypes.Code,
                 RequireClientSecret = false,

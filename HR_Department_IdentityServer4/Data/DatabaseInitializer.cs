@@ -4,27 +4,26 @@ using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace HR.Department.IdentityServer4.Data
+namespace HR.Department.IdentityServer4.Data;
+
+public class DatabaseInitializer
 {
-    public class DatabaseInitializer
+    public static void Init(IServiceProvider scopeServiceProvider)
     {
-        public static void Init(IServiceProvider scopeServiceProvider)
+        var userManager = scopeServiceProvider.GetService<UserManager<IdentityUser>>();
+
+        var user = new IdentityUser
         {
-            var userManager = scopeServiceProvider.GetService<UserManager<IdentityUser>>();
+            UserName = "User"
+        };
 
-            var user = new IdentityUser
-            {
-                UserName = "User"
-            };
-
-            var result = userManager.CreateAsync(user, "Password").GetAwaiter().GetResult();
-            if (result.Succeeded)
-            {
-                userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Admin")).GetAwaiter().GetResult();
-                userManager.AddClaimAsync(user, new Claim(JwtClaimTypes.Scope, "DepartmentAPI")).GetAwaiter().GetResult();
-            }
-
+        var result = userManager.CreateAsync(user, "Password").GetAwaiter().GetResult();
+        if (result.Succeeded)
+        {
+            userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Admin")).GetAwaiter().GetResult();
+            userManager.AddClaimAsync(user, new Claim(JwtClaimTypes.Scope, "DepartmentAPI")).GetAwaiter().GetResult();
         }
 
     }
+
 }

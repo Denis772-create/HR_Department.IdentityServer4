@@ -32,7 +32,7 @@ public class AuthorizeCheckOperationFilter : IOperationFilter
                                 Id = "oauth2"
                             }
                         }
-                    ] = new[] { "api1" }
+                    ] = new[] { "testApi" }
                 }
             };
         }

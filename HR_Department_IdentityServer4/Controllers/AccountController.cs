@@ -55,17 +55,13 @@ namespace HR.Department.IdentityServer4.Controllers
 
             if (button != "login")
             {
-                if (context != null)
-                {
-                    await _interaction.DenyAuthorizationAsync(context, AuthorizationError.AccessDenied);
+                if (context == null) return Redirect("~/");
 
-                    if (context.IsNativeClient())
-                        return this.LoadingPage("Redirect", model.ReturnUrl);
+                await _interaction.DenyAuthorizationAsync(context, AuthorizationError.AccessDenied);
 
-                    return Redirect(model.ReturnUrl);
-                }
-                else
-                    return Redirect("~/");
+                return context.IsNativeClient() 
+                    ? this.LoadingPage("Redirect", model.ReturnUrl) 
+                    : Redirect(model.ReturnUrl);
             }
 
             if (ModelState.IsValid)
@@ -82,19 +78,16 @@ namespace HR.Department.IdentityServer4.Controllers
 
                     if (context != null)
                     {
-                        if (context.IsNativeClient())
-                            return this.LoadingPage("Redirect", model.ReturnUrl);
-
-                        return Redirect(model.ReturnUrl);
+                        return context.IsNativeClient() 
+                            ? this.LoadingPage("Redirect", model.ReturnUrl) 
+                            : Redirect(model.ReturnUrl);
                     }
 
-                    if (Url.IsLocalUrl(model.ReturnUrl))
-                        return Redirect(model.ReturnUrl);
-                    else if (string.IsNullOrEmpty(model.ReturnUrl))
-                        return Redirect("~/");
-                    else
-                        throw new Exception("invalid return URL");
+                    if (Url.IsLocalUrl(model.ReturnUrl)) return Redirect(model.ReturnUrl);
 
+                    if (string.IsNullOrEmpty(model.ReturnUrl)) return Redirect("~/");
+
+                    throw new Exception("invalid return URL");
                 }
                 await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.Client.ClientId));
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);

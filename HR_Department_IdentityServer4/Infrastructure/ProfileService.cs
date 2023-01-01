@@ -12,12 +12,12 @@ namespace HR.Department.IdentityServer4.Infrastructure
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Role, "Admin")
+                new(ClaimTypes.Role, "Admin")
             };
 
             context.IssuedClaims.AddRange(claims);
 
-            return Task.CompletedTask; ;
+            return Task.CompletedTask;
         }
 
         public Task IsActiveAsync(IsActiveContext context)
